@@ -101,7 +101,10 @@ class OrderItem(models.Model):
         #you can simply use order.items.all() instead of having to do something more complex.
         on_delete=models.CASCADE)
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+    )
 
     quantity = models.PositiveIntegerField()
 
