@@ -94,9 +94,12 @@ class OrderItem(models.Model):
     """
     Model representing an item within an order.
     """
-    order = models.ForeignKey(Order,
-                              related_name='items',
-                              on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        Order,
+        related_name='items',
+        #what the related_name does is that if you have an Order and you want to get all the items related to that order,
+        #you can simply use order.items.all() instead of having to do something more complex.
+        on_delete=models.CASCADE)
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 

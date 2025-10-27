@@ -21,3 +21,55 @@ class ProductSerializer(serializers.ModelSerializer):
         return value
 
     #DRF automatically calls validate_<fieldname> for the field when data is being deserialized or saved via the API.
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    product_name = serializers.CharField(source='product.name')
+    product_price = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        source='product.price',
+    )
+
+    #product = ProductSerializer(read_only=True) this shows the entire product object inside the order item
+    class Meta:
+        model = OrderItem
+        fields = (
+            'product_name',
+            'product_price',
+            'quantity',
+            'item_subtotal',
+            #This means that every time Django (or DRF) accesses order_item.item_subtotal,
+            #it calls this method automatically and returns the calculated value.
+        )
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True, read_only=True)
+    #DRF fetches all OrderItems related to this order using order.items.all().
+    #Each OrderItem is serialized using OrderItemSerializer
+    total_price = serializers.SerializerMethodField(method_name='total')
+
+    #Defines a custom computed field that doesn’t exist in the database.
+    #DRF will call a method named get_total_price(self, obj) to calculate its value.
+
+    def total(self, obj):
+        """
+        This method is automatically called by DRF when serializing each Order.
+        obj → is the actual Order instance being serialized.
+        """
+        order_items = obj.items.all()
+        #Fetches all OrderItem objects related to this order.
+        #during total(), we’re computing data based on the model instance, not on already-serialized data.
+        return sum(order_item.item_subtotal for order_item in order_items)
+
+    class Meta:
+        model = Order
+        fields = (
+            'order_id',
+            'user',
+            'status',
+            'created_at',
+            'items',
+            'total_price',
+        )

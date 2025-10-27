@@ -10,4 +10,8 @@ urlpatterns = [
         'products/<int:pk>/',
         views.product_detail,
     ),
+    path(
+        'orders/',
+        views.order_list,
+    ),
 ]
