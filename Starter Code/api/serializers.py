@@ -73,3 +73,15 @@ class OrderSerializer(serializers.ModelSerializer):
             'items',
             'total_price',
         )
+
+
+class ProductInfoSerializer(serializers.Serializer):
+    """
+    get all products, count of products, max_price
+    Meta is used only in ModelSerializer to tell DRF which model and which fields to serialize.
+    But in ProductInfoSerializer, youre not representing a single model instance.
+    Youre representing a custom structure
+    """
+    products = ProductSerializer(many=True)
+    count = serializers.IntegerField()
+    max_price = serializers.FloatField()
