@@ -7,9 +7,9 @@ from django.db.models import Max
 from rest_framework import generics
 
 
-class ProductListAPIView(generics.ListCreateAPIView):
+class ProductListAPIView(generics.ListAPIView):
     """
-    View to list all products in the inventory or create a new product.
+    View to list all products in the inventory.
     """
     queryset = Product.objects.filter(stock__gt=0)
     #stock → is the model field (e.g., the number of items available).
@@ -55,9 +55,9 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 #    return Response(serializer.data)
 
 
-class OrderListAPIView(generics.ListCreateAPIView):
+class OrderListAPIView(generics.ListAPIView):
     """
-    View to list all products in the inventory or create a new product.
+    View to list all products in the inventory.
     """
     queryset = Order.objects.prefetch_related('items__product')
     #stock → is the model field (e.g., the number of items available).
@@ -67,16 +67,26 @@ class OrderListAPIView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
 
 
-class UserOrderListAPIView(generics.ListCreateAPIView):
+class UserOrderListAPIView(generics.ListAPIView):
     """
-    View to list all products in the inventory or create a new product.
+    View to list all products in the inventory .
     """
     queryset = Order.objects.prefetch_related('items__product')
+    #It defines the base set of objects the view will work with.
+    #Here, it fetches all Order objects and optimizes queries
+    #When we get orders, also fetch all their related items
+    #And for each item, fetch the related product
     serializer_class = OrderSerializer
 
     def get_queryset(self):
         qs = super().get_queryset()
+        #Calls the parent class (ListAPIView) to get the base queryset defined earlier.
+        #So now qs = all orders (with their prefetched items and products).
         return qs.filter(user=self.request.user)
+        #Filters that queryset to include only the orders that belong to the current logged-in user.
+        #self.request.user gives the user who made the API request.
+        #but a problem arises if the user is not authenticated.
+        #so now we need to tell django that this view is only accessible to authenticated users.
 
 
 #@api_view(['GET'])
