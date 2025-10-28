@@ -67,6 +67,18 @@ class OrderListAPIView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
 
 
+class UserOrderListAPIView(generics.ListCreateAPIView):
+    """
+    View to list all products in the inventory or create a new product.
+    """
+    queryset = Order.objects.prefetch_related('items__product')
+    serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(user=self.request.user)
+
+
 #@api_view(['GET'])
 #Only GET requests are allowed.
 #"This is an API View."
