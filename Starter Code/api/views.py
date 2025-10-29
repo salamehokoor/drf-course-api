@@ -9,11 +9,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 
-class ProductListAPIView(generics.ListAPIView):
+class ProductListCreateAPIView(generics.ListCreateAPIView):
     """
-    View to list all products in the inventory.
+    View to list and create products in the inventory.
     """
-    queryset = Product.objects.filter(stock__gt=0)
+    queryset = Product.objects.all()
     #stock → is the model field (e.g., the number of items available).
     #__gt → means “greater than”.
     #Together, stock__gt=0 means:
@@ -35,6 +35,7 @@ class ProductListAPIView(generics.ListAPIView):
 
 class ProductDetailAPIView(generics.RetrieveAPIView):
     """
+    Used to get a single object by its primary key (id)
     View to retrieve a specific product by its primary key (pk).
     """
     #There is a bit of magic happening here: we have a PK in the URL pattern (products/<int:pk>/).
@@ -59,7 +60,9 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 
 class OrderListAPIView(generics.ListAPIView):
     """
-    View to list all products in the inventory.
+    ListAPIView
+    Used to list multiple objects (e.g. all orders of a user, all products, etc.)
+    
     """
     queryset = Order.objects.prefetch_related('items__product')
     #stock → is the model field (e.g., the number of items available).
