@@ -2,10 +2,22 @@ GET http://127.0.0.1:8000/products/ HTTP/1.1
 ###
 POST  http://127.0.0.1:8000/products/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxNzc1NDMxLCJpYXQiOjE3NjE3NzUxMzEsImp0aSI6IjJlOGZhZDYxODMyZTRmMGM5NzQ2MmJiNzE3NTgwZGExIiwidXNlcl9pZCI6IjEifQ.HgftCCzAD6_J9F1kIPTRAYt5Q1txXyaaFInkPXrzamI
 
 {
-    "name": "Television",
+    "name": "Table",
     "description": "This is a new product.",
     "price": 300,
-    "stock": 14
+    "stock": 12
 }
+###
+POST  http://127.0.0.1:8000/api/token/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "test"
+}
+###
+GET http://127.0.0.1:8000/user-orders/ HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxNzc1NDMxLCJpYXQiOjE3NjE3NzUxMzEsImp0aSI6IjJlOGZhZDYxODMyZTRmMGM5NzQ2MmJiNzE3NTgwZGExIiwidXNlcl9pZCI6IjEifQ.HgftCCzAD6_J9F1kIPTRAYt5Q1txXyaaFInkPXrzamI
