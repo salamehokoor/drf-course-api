@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Max
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 
 class ProductListAPIView(generics.ListAPIView):
@@ -77,6 +79,9 @@ class UserOrderListAPIView(generics.ListAPIView):
     #When we get orders, also fetch all their related items
     #And for each item, fetch the related product
     serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    #Only authenticated users (those who have logged in and have valid credentials or tokens) can access this endpoint.
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -108,16 +113,34 @@ class UserOrderListAPIView(generics.ListAPIView):
 #    return Response(serializer.data)
 
 
-@api_view(['GET'])
-def product_info(request):
+class ProductInfoAPIView(APIView):
+    """
+    View to provide aggregated product information.
+    """
 
-    products = Product.objects.all()
-    serializer = ProductInfoSerializer({
-        'products':
-        products,
-        'count':
-        len(products),
-        'max_price':
-        products.aggregate(max_price=Max('price'))['max_price'],
-    })
-    return Response(serializer.data)
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductInfoSerializer({
+            'products':
+            products,
+            'count':
+            len(products),
+            'max_price':
+            products.aggregate(max_price=Max('price'))['max_price'],
+        })
+        return Response(serializer.data)
+
+
+#@api_view(['GET'])
+#def product_info(request):
+
+#    products = Product.objects.all()
+#    serializer = ProductInfoSerializer({
+#        'products':
+#        products,
+#        'count':
+#        len(products),
+#        'max_price':
+#        products.aggregate(max_price=Max('price'))['max_price'],
+#    })
+#    return Response(serializer.data)

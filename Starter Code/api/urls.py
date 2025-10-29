@@ -8,7 +8,7 @@ urlpatterns = [
     ),
     path(
         'products/info',
-        views.product_info,
+        views.ProductInfoAPIView.as_view(),
     ),
     path(
         'products/<int:pk>/',
@@ -21,5 +21,6 @@ urlpatterns = [
     path(
         'user-orders/',
         views.UserOrderListAPIView.as_view(),
+        name='user-orders',
     ),
 ]
