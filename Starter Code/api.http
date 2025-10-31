@@ -1,11 +1,10 @@
 GET http://127.0.0.1:8000/products/ HTTP/1.1
 ###
-POST  http://127.0.0.1:8000/products/ HTTP/1.1
+POST http://127.0.0.1:8000/products/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxNzc1NDMxLCJpYXQiOjE3NjE3NzUxMzEsImp0aSI6IjJlOGZhZDYxODMyZTRmMGM5NzQ2MmJiNzE3NTgwZGExIiwidXNlcl9pZCI6IjEifQ.HgftCCzAD6_J9F1kIPTRAYt5Q1txXyaaFInkPXrzamI
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxOTQ0NTY2LCJpYXQiOjE3NjE5NDQyNjYsImp0aSI6IjE3NGZhNTY4Y2E3YzQ1Y2Y4MjE3ZTdjMjlmM2U5YjAxIiwidXNlcl9pZCI6IjIifQ.psp0ZVMZd5sCvaF9-00fvMpLFrhFzJohurO8dbWZTfE
 {
-    "name": "Table",
+    "name": "Table222",
     "description": "This is a new product.",
     "price": 300,
     "stock": 12
@@ -20,4 +19,11 @@ Content-Type: application/json
 }
 ###
 GET http://127.0.0.1:8000/user-orders/ HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxNzc1NDMxLCJpYXQiOjE3NjE3NzUxMzEsImp0aSI6IjJlOGZhZDYxODMyZTRmMGM5NzQ2MmJiNzE3NTgwZGExIiwidXNlcl9pZCI6IjEifQ.HgftCCzAD6_J9F1kIPTRAYt5Q1txXyaaFInkPXrzamI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxOTQ0NTY2LCJpYXQiOjE3NjE5NDQyNjYsImp0aSI6IjE3NGZhNTY4Y2E3YzQ1Y2Y4MjE3ZTdjMjlmM2U5YjAxIiwidXNlcl9pZCI6IjIifQ.psp0ZVMZd5sCvaF9-00fvMpLFrhFzJohurO8dbWZTfE
+###
+POST  http://127.0.0.1:8000/api/token/refresh/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2MjAzMDMzMCwiaWF0IjoxNzYxOTQzOTMwLCJqdGkiOiJhZWY2ZWY3YTNkNWY0NWQ4YTk5YTJkYjgyMjUyNjVmOCIsInVzZXJfaWQiOiIxIn0.87Nfo1AmFtKf7Z1xXgQucGiF5tyMMWvcwatL07GgXqg"
+}
