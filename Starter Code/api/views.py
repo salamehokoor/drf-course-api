@@ -7,6 +7,7 @@ from django.db.models import Max
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.views import APIView
+from api.filters import ProductFilter
 
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
@@ -19,6 +20,9 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     #Together, stock__gt=0 means:
     #“Get all Product objects where the stock value is greater than 0.”
     serializer_class = ProductSerializer
+    filterset_class = ProductFilter
+
+    #filterset_fields = ('name', 'price')
 
     def get_permissions(self):
         self.permission_classes = [AllowAny]
