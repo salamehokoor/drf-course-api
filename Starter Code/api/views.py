@@ -22,8 +22,8 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         self.permission_classes = [AllowAny]
-        #if self.request.method == 'POST':
-        #self.permission_classes = [IsAdminUser]
+        if self.request.method == 'POST':
+            self.permission_classes = [IsAdminUser]
         return super().get_permissions()
 
 
@@ -39,7 +39,7 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
 #    return Response(serializer.data)
 
 
-class ProductDetailAPIView(generics.RetrieveAPIView):
+class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
     Used to get a single object by its primary key (id)
     View to retrieve a specific product by its primary key (pk).
@@ -52,6 +52,13 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     #we can change the name of the value we are getting from the url and then change the lookup_url_kwarg to match it.
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    lookup_url_kwarg = 'product_id'
+
+    def get_permissions(self):
+        self.permission_classes = [AllowAny]
+        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
 
 
 #@api_view(['GET'])

@@ -11,7 +11,7 @@ urlpatterns = [
         views.ProductInfoAPIView.as_view(),
     ),
     path(
-        'products/<int:pk>/',
+        'products/<int:product_id>/',
         views.ProductDetailAPIView.as_view(),
     ),
     path(
