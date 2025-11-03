@@ -7,7 +7,7 @@ from django.db.models import Max
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.views import APIView
-from api.filters import ProductFilter
+from api.filters import ProductFilter, InStockFilterBackend
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -22,7 +22,8 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     #Together, stock__gt=0 means:
     #“Get all Product objects where the stock value is greater than 0.”
     filter_backends = [
-        DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
+        DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,
+        InStockFilterBackend
     ]
     serializer_class = ProductSerializer
     filterset_class = ProductFilter
