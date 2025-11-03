@@ -4,19 +4,20 @@ from api.models import Product, Order
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Max
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.views import APIView
 from api.filters import ProductFilter, InStockFilterBackend
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import PageNumberPagination
 
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     """
     View to list and create products in the inventory.
     """
-    queryset = Product.objects.all()
+    queryset = Product.objects.order_by('pk')
     #stock → is the model field (e.g., the number of items available).
     #__gt → means “greater than”.
     #Together, stock__gt=0 means:
@@ -27,10 +28,17 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     ]
     serializer_class = ProductSerializer
     filterset_class = ProductFilter
+    #filterset_fields = ('name', 'price')
     search_fields = ['name', 'description']
     ordering_fields = ['name', 'price']
-
-    #filterset_fields = ('name', 'price')
+    pagination_class = PageNumberPagination
+    pagination_class.page_size = 2
+    pagination_class.page_query_param = 'pagenum'
+    #this is what appears on  the url to change the page number
+    pagination_class.page_size_query_param = 'size'
+    #this is what appears on the url to change the page size
+    #here we are hard coding it to 2 but we can also make it dynamic by adding the size query param in the url
+    pagination_class.max_page_size = 6
 
     def get_permissions(self):
         self.permission_classes = [AllowAny]
@@ -83,18 +91,27 @@ class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 #    return Response(serializer.data)
 
 
-class OrderListAPIView(generics.ListAPIView):
+class OrderViewSet(viewsets.ModelViewSet):
     """
-    ListAPIView
-    Used to list multiple objects (e.g. all orders of a user, all products, etc.)
-    
+    A viewset for viewing and editing order instances.
     """
     queryset = Order.objects.prefetch_related('items__product')
-    #stock → is the model field (e.g., the number of items available).
-    #__gt → means “greater than”.
-    #Together, stock__gt=0 means:
-    #“Get all Product objects where the stock value is greater than 0.”
     serializer_class = OrderSerializer
+    permission_classes = [AllowAny]
+
+
+#class OrderListAPIView(generics.ListAPIView):
+#    """
+#    ListAPIView
+#    Used to list multiple objects (e.g. all orders of a user, all products, etc.)
+#
+#    """
+#    queryset = Order.objects.prefetch_related('items__product')
+#    #stock → is the model field (e.g., the number of items available).
+#__gt → means “greater than”.
+#Together, stock__gt=0 means:
+#“Get all Product objects where the stock value is greater than 0.”
+#    serializer_class = OrderSerializer
 
 
 class UserOrderListAPIView(generics.ListAPIView):

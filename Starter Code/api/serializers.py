@@ -47,6 +47,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    order_id = serializers.UUIDField(read_only=True)
     items = OrderItemSerializer(many=True, read_only=True)
     #DRF fetches all OrderItems related to this order using order.items.all().
     #Each OrderItem is serialized using OrderItemSerializer
