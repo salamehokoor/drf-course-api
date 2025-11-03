@@ -2,12 +2,12 @@ from django.shortcuts import get_object_or_404
 from api.serializers import ProductSerializer, OrderSerializer, ProductInfoSerializer
 from api.models import Product, Order
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import action
 from django.db.models import Max
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.views import APIView
-from api.filters import ProductFilter, InStockFilterBackend
+from api.filters import ProductFilter, InStockFilterBackend, OrderFilter
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
@@ -97,46 +97,59 @@ class OrderViewSet(viewsets.ModelViewSet):
     """
     queryset = Order.objects.prefetch_related('items__product')
     serializer_class = OrderSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    pagination_class = None
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OrderFilter
 
+    @action(
+        detail=False,
+        methods=['get'],
+        url_path='user-orders',
+    )
+    def user_orders(self, request):
+        """
+        View to list all orders of the authenticated user.
+        """
+        orders = self.get_queryset().filter(user=request.user)
+        serializer = self.get_serializer(orders, many=True)
+        return Response(serializer.data)
 
-#class OrderListAPIView(generics.ListAPIView):
-#    """
-#    ListAPIView
-#    Used to list multiple objects (e.g. all orders of a user, all products, etc.)
-#
-#    """
-#    queryset = Order.objects.prefetch_related('items__product')
-#    #stock → is the model field (e.g., the number of items available).
-#__gt → means “greater than”.
-#Together, stock__gt=0 means:
-#“Get all Product objects where the stock value is greater than 0.”
-#    serializer_class = OrderSerializer
+    #class OrderListAPIView(generics.ListAPIView):
+    #    """
+    #    ListAPIView
+    #    Used to list multiple objects (e.g. all orders of a user, all products, etc.)
+    #
+    #    """
+    #    queryset = Order.objects.prefetch_related('items__product')
+    #    #stock → is the model field (e.g., the number of items available).
+    #__gt → means “greater than”.
+    #Together, stock__gt=0 means:
+    #“Get all Product objects where the stock value is greater than 0.”
+    #    serializer_class = OrderSerializer
 
-
-class UserOrderListAPIView(generics.ListAPIView):
-    """
-    View to list all products in the inventory .
-    """
-    queryset = Order.objects.prefetch_related('items__product')
+    #class UserOrderListAPIView(generics.ListAPIView):
+    #    """
+    #    View to list all products in the inventory .
+    #    """
+    #    queryset = Order.objects.prefetch_related('items__product')
     #It defines the base set of objects the view will work with.
     #Here, it fetches all Order objects and optimizes queries
     #When we get orders, also fetch all their related items
     #And for each item, fetch the related product
-    serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
-
+    #    serializer_class = OrderSerializer
+    #    permission_classes = [IsAuthenticated]
     #Only authenticated users (those who have logged in and have valid credentials or tokens) can access this endpoint.
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        #Calls the parent class (ListAPIView) to get the base queryset defined earlier.
-        #So now qs = all orders (with their prefetched items and products).
-        return qs.filter(user=self.request.user)
-        #Filters that queryset to include only the orders that belong to the current logged-in user.
-        #self.request.user gives the user who made the API request.
-        #but a problem arises if the user is not authenticated.
-        #so now we need to tell django that this view is only accessible to authenticated users.
+    #def get_queryset(self):
+    #qs = super().get_queryset()
+    #Calls the parent class (ListAPIView) to get the base queryset defined earlier.
+    #So now qs = all orders (with their prefetched items and products).
+    #return qs.filter(user=self.request.user)
+    #Filters that queryset to include only the orders that belong to the current logged-in user.
+    #self.request.user gives the user who made the API request.
+    #but a problem arises if the user is not authenticated.
+    #so now we need to tell django that this view is only accessible to authenticated users.
 
 
 #@api_view(['GET'])
