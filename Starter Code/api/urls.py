@@ -15,6 +15,10 @@ urlpatterns = [
         'products/<int:product_id>/',
         views.ProductDetailAPIView.as_view(),
     ),
+    path(
+        'users/',
+        views.UserListView.as_view(),
+    ),
 ]
 router = DefaultRouter()
 router.register('orders', views.OrderViewSet)

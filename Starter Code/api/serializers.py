@@ -1,10 +1,18 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import Order, Product, OrderItem
+from .models import Order, Product, OrderItem, User
 """
 Converting model instances to JSON (so you can send them in an API response).
 Validating and converting incoming JSON to model instances (so you can save data from API requests).
 """
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+
+        fields = ('username', 'email', 'is_staff', 'is_superuser', 'orders')
 
 
 class ProductSerializer(serializers.ModelSerializer):

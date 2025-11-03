@@ -61,7 +61,9 @@ class Order(models.Model):
     order_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     #By setting it as default, every new order automatically gets a unique UUID without manually assigning it.
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             related_name='orders')
     #This creates a relationship to the User model.
     #ForeignKey means each order belongs to one user, but a user can have many orders.
     #on_delete=models.CASCADE means: if the user is deleted, all their orders will also be deleted automatically.
