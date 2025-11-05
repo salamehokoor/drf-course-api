@@ -1,5 +1,5 @@
 from django.contrib import admin
-from api.models import Order, OrderItem, User
+from api.models import Order, OrderItem, User, Product
 # Register your models here.
 
 
@@ -27,3 +27,9 @@ admin.site.register(Order, OrderAdmin)
 #You’re telling Django:
 #“Show the Order model in the admin, using the custom admin setup OrderAdmin.”
 admin.site.register(User)
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ("name", "price", "stock")
+    search_fields = ("name", )

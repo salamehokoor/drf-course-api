@@ -11,6 +11,8 @@ from api.filters import ProductFilter, InStockFilterBackend, OrderFilter
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
@@ -39,6 +41,15 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     #this is what appears on the url to change the page size
     #here we are hard coding it to 2 but we can also make it dynamic by adding the size query param in the url
     pagination_class.max_page_size = 6
+
+    @method_decorator(cache_page(60 * 15, key_prefix='product_list'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        import time
+        time.sleep(2)
+        return super().get_queryset()
 
     def get_permissions(self):
         self.permission_classes = [AllowAny]
